@@ -1,0 +1,4 @@
+# Never upload personal data or backups to the public repo.
+pantry-data*.json
+test-data.json
+*.backup.json
