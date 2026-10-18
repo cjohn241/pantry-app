@@ -7,14 +7,16 @@ import * as db from './db.js';
 import { esc, dateKey, toast } from './ui.js';
 import { loadRules } from './rules.js';
 import { importFile, startEmpty } from './data.js';
+import { ensureCampaign } from './campaign.js';
 import * as today from './today.js';
+import * as quests from './quests.js';
 import * as week from './week.js';
 import * as pantry from './pantry.js';
 import * as groceries from './groceries.js';
 import * as recipes from './recipes.js';
 import * as settings from './settings.js';
 
-const SCREENS = { today, week, pantry, groceries, recipes, settings };
+const SCREENS = { today, quests, week, pantry, groceries, recipes, settings };
 
 const main = document.getElementById('screen');
 let currentScreen = null;
@@ -92,6 +94,8 @@ document.addEventListener('visibilitychange', () => {
 
 async function start() {
   await loadRules();
+  // Data from before the campaign existed gets its starting quests here.
+  if (await db.hasData()) await ensureCampaign();
   await show();
 
   // Ask the browser not to clear our data when storage gets tight.

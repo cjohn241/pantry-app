@@ -4,6 +4,8 @@ import * as db from './db.js';
 import { esc, toast, confirmBox } from './ui.js';
 import { downloadExport, shareExport, canShareFiles, importFile, num, APP_VERSION } from './data.js';
 import { loadRules } from './rules.js';
+import { getCampaign, saveCampaign, regionById } from './campaign.js';
+import { heroSVG, SKIN, HAIR, CLOAK } from './sprite.js';
 
 const TARGET_FIELDS = [
   { key: 'calories', label: 'Calories' },
@@ -20,13 +22,112 @@ function when(iso) {
 
 const splitList = (text) => text.split(',').map((s) => s.trim()).filter(Boolean);
 
+/* ---------- Campaign settings ---------- */
+
+/** A row of color swatches that work like radio buttons. */
+function swatches(name, options, current) {
+  return `<div class="swatches" role="radiogroup" aria-label="${name}">
+    ${Object.entries(options).map(([key, color]) => `
+      <label class="swatch" title="${key}">
+        <input type="radio" name="${name}" value="${key}" ${key === current ? 'checked' : ''}>
+        <span style="background:${Array.isArray(color) ? color[0] : color}"></span>
+        <span class="sr-only">${key}</span>
+      </label>`).join('')}
+  </div>`;
+}
+
+function campaignSection(campaign, quests) {
+  const hero = campaign.hero;
+  return `
+    <section class="card">
+      <h2>Quests and your hero</h2>
+      <form id="campaign-form" style="display:grid;gap:14px">
+        <div class="hero-edit">
+          <div class="hero-sprite" id="hero-preview">${heroSVG(hero, 5)}</div>
+          <div style="display:grid;gap:10px;flex:1;min-width:220px">
+            <div class="grid-2">
+              <label class="field">Name <input type="text" name="heroName" value="${esc(hero.name)}" required></label>
+              <label class="field">Class <input type="text" name="heroClass" value="${esc(hero.cls)}" required></label>
+            </div>
+            <div class="field">Skin ${swatches('skin', SKIN, hero.skin)}</div>
+            <div class="field">Hair ${swatches('hair', HAIR, hero.hair)}</div>
+            <div class="field">Cloak ${swatches('cloak', CLOAK, hero.cloak)}</div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <label class="field">Training days a week
+            <select name="daysPerWeek">${[2, 3, 4, 5, 6].map((n) => `<option ${n === campaign.daysPerWeek ? 'selected' : ''}>${n}</option>`).join('')}</select>
+          </label>
+          <label class="field">5K race day <input type="date" name="raceDate" value="${campaign.raceDate || ''}"></label>
+        </div>
+        <div class="grid-2">
+          <label class="field">Reward <input type="text" name="rewardName" value="${esc(campaign.reward.name)}" placeholder="New running shoes"></label>
+          <label class="field">Price in gold <input type="number" name="rewardPrice" min="1" step="1" inputmode="numeric" value="${campaign.reward.price}"></label>
+        </div>
+        <details>
+          <summary class="link-btn">Quest names and XP</summary>
+          <div style="display:grid;gap:8px;margin-top:10px">
+            ${quests.map((q) => `
+              <div class="quest-edit" data-id="${esc(q.id)}">
+                <span class="muted small">${esc(regionById(q.region)?.name || '')}</span>
+                <input type="text" name="qname-${esc(q.id)}" value="${esc(q.name)}" aria-label="Quest name">
+                <input type="number" name="qxp-${esc(q.id)}" value="${q.xp}" min="0" step="5" inputmode="numeric" aria-label="XP">
+              </div>`).join('')}
+          </div>
+        </details>
+        ${campaign.rewardsClaimed.length ? `<p class="muted small">Rewards claimed: ${campaign.rewardsClaimed.map((r) => esc(r.name)).join(', ')}</p>` : ''}
+        <div class="dlg-actions"><span class="spacer"></span><button class="btn primary" type="submit">Save</button></div>
+      </form>
+    </section>`;
+}
+
+function wireCampaignForm(main, campaign, quests) {
+  const form = main.querySelector('#campaign-form');
+  const pick = (name) => form.querySelector(`input[name="${name}"]:checked`)?.value;
+  const heroFromForm = () => ({
+    ...campaign.hero,
+    name: form.heroName.value.trim() || campaign.hero.name,
+    cls: form.heroClass.value.trim() || campaign.hero.cls,
+    skin: pick('skin'), hair: pick('hair'), cloak: pick('cloak'),
+  });
+
+  // Redraw the hero as you pick colors.
+  form.addEventListener('change', (e) => {
+    if (['skin', 'hair', 'cloak'].includes(e.target.name)) {
+      form.querySelector('#hero-preview').innerHTML = heroSVG(heroFromForm(), 5);
+    }
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fresh = await getCampaign(); // keep anything logged meanwhile
+    fresh.hero = heroFromForm();
+    fresh.daysPerWeek = Number(form.daysPerWeek.value) || 3;
+    fresh.raceDate = form.raceDate.value || null;
+    fresh.reward = {
+      name: form.rewardName.value.trim(),
+      price: Math.max(1, Math.round(Number(form.rewardPrice.value) || 500)),
+    };
+    await saveCampaign(fresh);
+    for (const q of quests) {
+      const name = form.querySelector(`[name="qname-${q.id}"]`).value.trim() || q.name;
+      const xp = Math.max(0, Math.round(Number(form.querySelector(`[name="qxp-${q.id}"]`).value) || 0));
+      if (name !== q.name || xp !== q.xp) await db.put('quests', { ...q, name, xp });
+    }
+    toast('Saved');
+  });
+}
+
 export async function render(main) {
-  const [targets, rulesSaved, meta, profile] = await Promise.all([
+  const [targets, rulesSaved, meta, profile, campaign, quests] = await Promise.all([
     db.getSetting('targets', {}),
     db.getSetting('rules', { notMineFlags: [], neverInMeals: [] }),
     db.getSetting('meta', {}),
     db.getSetting('profile', {}),
+    getCampaign(),
+    db.getAll('quests'),
   ]);
+  quests.sort((a, b) => a.order - b.order);
   const persisted = navigator.storage && navigator.storage.persisted ? await navigator.storage.persisted() : false;
   const redraw = () => render(main);
 
@@ -46,6 +147,8 @@ export async function render(main) {
         <div class="dlg-actions"><span class="spacer"></span><button class="btn primary" type="submit">Save targets</button></div>
       </form>
     </section>
+
+    ${campaignSection(campaign, quests)}
 
     <section class="card">
       <h2>Backup</h2>
@@ -80,6 +183,8 @@ export async function render(main) {
       <p class="muted small">Version ${APP_VERSION}. Imported ${esc(when(meta.importedAt))}.
       Storage: ${persisted ? 'protected (the tablet won\'t clear it when space is low)' : 'not protected yet. The tablet may clear it if space runs very low, so keep exporting.'}</p>
     </section>`;
+
+  wireCampaignForm(main, campaign, quests);
 
   main.querySelector('#targets-form').addEventListener('submit', async (e) => {
     e.preventDefault();

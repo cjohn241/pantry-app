@@ -9,9 +9,10 @@
 import * as db from './db.js';
 import { uid, dateKey, shortLabel } from './ui.js';
 import { guessKind, guessOptional, deriveRules, loadRules } from './rules.js';
+import { ensureCampaign, normalizeQuest, normalizeLogEntry } from './campaign.js';
 
 export const SCHEMA_VERSION = 1;   // shape of the data file
-export const APP_VERSION = '1.0.0'; // shown in Settings. Keep in step with CACHE_NAME in sw.js
+export const APP_VERSION = '1.1.0'; // shown in Settings. Keep in step with CACHE_NAME in sw.js
 
 export const DEFAULT_LOCATIONS = [
   'Pantry', 'Spice drawer', 'Sauce cabinet', 'Dinner cabinet', 'Fridge', 'Freezer', 'Deep freeze',
@@ -134,7 +135,12 @@ export async function importJSON(json) {
     groceries: (json.grocery || []).map(normalizeGrocery).filter((g) => g.name),
     recipes: (json.recipes || []).map(normalizeRecipe),
     prep: (json.weeklyPrep || []).map(normalizePrep),
+    // Fitness campaign. A file from before the campaign has none of this,
+    // and ensureCampaign() below fills in the starting quests.
+    quests: (json.quests || []).map(normalizeQuest),
+    questLog: (json.questLog || []).map(normalizeLogEntry),
     settings: [
+      ...(json.campaign ? [{ key: 'campaign', value: json.campaign }] : []),
       { key: 'profile', value: json.profile || {} },
       { key: 'targets', value: normalizeTargets(json.targets) },
       { key: 'locations', value: Array.isArray(json.locations) && json.locations.length ? json.locations : DEFAULT_LOCATIONS },
@@ -155,6 +161,7 @@ export async function importJSON(json) {
 
   await db.replaceAll(rows);
   await loadRules();
+  await ensureCampaign();
   return { items: rows.items.length, days: rows.days.length };
 }
 
@@ -178,9 +185,10 @@ export async function importFile(file) {
 /* ---------- Export ---------- */
 
 export async function buildExport() {
-  const [items, days, groceries, recipes, prep, settingRows] = await Promise.all([
+  const [items, days, groceries, recipes, prep, settingRows, quests, questLog] = await Promise.all([
     db.getAll('items'), db.getAll('days'), db.getAll('groceries'),
     db.getAll('recipes'), db.getAll('prep'), db.getAll('settings'),
+    db.getAll('quests'), db.getAll('questLog'),
   ]);
   const s = Object.fromEntries(settingRows.map((r) => [r.key, r.value]));
 
@@ -201,6 +209,10 @@ export async function buildExport() {
     recipes: recipes.sort((a, b) => a.order - b.order),
     weeklyPrep: prep.sort((a, b) => a.order - b.order).map(({ text, done }) => ({ text, done })),
     idealDayTemplate: s.idealDayTemplate || [],
+    // Fitness campaign
+    campaign: s.campaign,
+    quests: quests.sort((a, b) => a.order - b.order),
+    questLog: questLog.sort((a, b) => (a.at || 0) - (b.at || 0)),
   };
 }
 

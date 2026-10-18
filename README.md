@@ -70,6 +70,7 @@ Turn on airplane mode, close the app, and open it again. Everything should still
 | Screen | What it's for |
 |---|---|
 | **Today** | Tick meals as you eat them and the four bars fill up. Tap a meal to edit it. Water: +8 oz per tap. Rate energy and focus 1 to 5 (tap the same number again to clear it). |
+| **Quests** | Your fitness campaign. Tap **Done** on a quest to earn XP (and the same amount of gold). **Undo** shows for a few seconds after each tap. The 5K boss track sits top right, and **Travel week** moves hotel and Hinge Health quests to the top. Today shows the next quest too, so it's one tap from the home screen. |
 | **Week** | Seven day cards with totals. **Ideal day** fills a day from your template. **Copy to…** and **Copy from…** copy a whole day. Use the arrows to move a week at a time. |
 | **Pantry** | Tap an item to set its fill (Full, Most, Half, Low, Out, or the slider). The cart button adds it to groceries. **Add item** is at the top. |
 | **Groceries** | Type to add. Tick things as you shop, then tap **Done shopping** to clear them and mark the matching pantry items Full. **Suggested** lists items at 25% or less. |
@@ -122,11 +123,16 @@ js/data.js             import and export of the JSON file
 js/rules.js            diet rules: whose food is whose, never-words, the meat and rennet checks
 js/ui.js               shared helpers: dialogs, toast messages, tag chips, the jar gauge, dates
 js/meals.js            days and meals: totals, the meal editor, ideal day, copying days
-js/today.js  week.js  pantry.js  groceries.js  recipes.js  settings.js   one file per screen
+js/campaign.js         fitness campaign rules: regions, quests, XP, levels, gold, travel weeks, the 5K track
+js/sprite.js           the pixel-art hero (a small text map, one letter per pixel)
+js/today.js  quests.js  week.js  pantry.js  groceries.js  recipes.js  settings.js   one file per screen
+fonts/                 Cinzel and EB Garamond, bundled so they work offline (SIL Open Font License)
 icons/                 home-screen icons
 ```
 
 Every screen follows the same pattern. `render(main)` reads from the database, builds the HTML as a string, and puts it on the page. Buttons carry `data-act="..."`, and one click handler per screen checks that value to decide what to do. After a change, it saves to the database and calls `render` again.
+
+**The campaign:** each Done tap adds a row to the `questLog` table. XP is the total of those rows, gold is XP minus what you've spent on rewards, and your level comes from XP (level 2 at 100, 3 at 300, 4 at 600, each level needing 100 more). Quest names and XP can be changed in **Settings → Quests and your hero**. Your hero's name and your partner's name for co-op quests come from your data file, not the code.
 
 The personal rules (which tags mean "not my food", and which words should never show up in a meal) aren't written in the code. They come from your data file, and you can edit them under **Settings → Diet rules**.
 

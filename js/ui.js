@@ -60,12 +60,29 @@ export function fmt(n) {
 /* ---------- Toast: a short message at the bottom ---------- */
 
 let toastTimer = null;
-export function toast(message) {
+
+/**
+ * Show a short message. Optional action = { label: 'Undo', run: fn }
+ * adds a button, and the message stays a little longer so you can tap it.
+ */
+export function toast(message, action = null) {
   const el = document.getElementById('toast');
   el.textContent = message;
+  el.classList.toggle('has-action', Boolean(action));
+  if (action) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'toast-btn';
+    btn.textContent = action.label;
+    btn.addEventListener('click', () => {
+      el.classList.remove('show');
+      action.run();
+    }, { once: true });
+    el.append(btn);
+  }
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+  toastTimer = setTimeout(() => el.classList.remove('show'), action ? 6000 : 2600);
 }
 
 /* ---------- Dialog (pop-up) ----------

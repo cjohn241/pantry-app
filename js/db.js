@@ -8,13 +8,15 @@
 //   groceries  key: id     the shopping list
 //   recipes    key: id     recipe cards
 //   prep       key: id     weekly prep checklist
-//   settings   key: key    one row per setting: profile, targets, rules, ...
+//   settings   key: key    one row per setting: profile, targets, rules, campaign, ...
+//   quests     key: id     fitness campaign: the quests you can log
+//   questLog   key: id     fitness campaign: one row per quest done
 //
 // IndexedDB's own API is callback-based and wordy, so this file wraps it
 // in a few small async functions: getAll, get, put, remove, replaceAll.
 
 const DB_NAME = 'pantry-meals';
-const DB_VERSION = 1; // bump this only if the table list below changes
+const DB_VERSION = 2; // bump this only if the table list below changes (2 = campaign tables)
 
 export const STORES = {
   items: 'id',
@@ -23,6 +25,8 @@ export const STORES = {
   recipes: 'id',
   prep: 'id',
   settings: 'key',
+  quests: 'id',
+  questLog: 'id',
 };
 
 let dbPromise = null;

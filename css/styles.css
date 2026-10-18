@@ -1,86 +1,120 @@
 /* =========================================================
    Pantry & Meals — styles
-   Colors live in the variables below. Dark mode swaps them
-   automatically when the tablet is in dark mode.
+   A parchment look in light mode and a candlelit tavern look
+   in dark mode. Colors live in the variables below; dark mode
+   swaps them automatically when the tablet is in dark mode.
    ========================================================= */
+
+/* Fonts are saved inside the app (fonts/ folder) so they work offline.
+   Both are free to bundle under the SIL Open Font License. */
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(../fonts/cinzel-latin.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url(../fonts/ebgaramond-latin.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(../fonts/ebgaramond-italic-latin.woff2) format('woff2');
+}
 
 :root {
   color-scheme: light dark;
 
-  --bg: #f6f4ef;
-  --surface: #ffffff;
-  --surface-2: #efece5;
-  --text: #1d2125;
-  --muted: #5b636d;
-  --line: #dcd7cc;
+  --font-display: 'Cinzel', Georgia, 'Times New Roman', serif;   /* headings, buttons */
+  --font-body: 'EB Garamond', Georgia, 'Times New Roman', serif;  /* everything else */
 
-  --accent: #36684a;
-  --accent-ink: #ffffff;
-  --accent-soft: #dcebe0;
-  --danger: #a3271a;
+  /* Parchment */
+  --bg: #ece0c2;
+  --surface: #f8f1e1;
+  --surface-2: #ebdfc0;
+  --text: #33241a;
+  --muted: #6b573d;
+  --line: #cbb68c;
+
+  --accent: #6b2d2d;        /* deep red: main buttons, active tab */
+  --accent-ink: #f8f1e1;
+  --accent-soft: #edd9c8;
+  --gold: #8a6a1c;          /* XP, gold, numbers that matter */
+  --gold-bright: #c99a2e;
+  --danger: #9b2c1d;
 
   /* One color per macro bar */
-  --kcal: #b8661f;
-  --protein: #2f7a52;
-  --carbs: #3d68a8;
-  --fat: #8a4f9c;
+  --kcal: #b0642a;
+  --protein: #3f6b3a;
+  --carbs: #3c5f86;
+  --fat: #7b4a7e;
 
   /* Warnings */
-  --warn-bg: #fdf1d8;  --warn-ink: #6b4a00;
-  --stop-bg: #fbe1de;  --stop-ink: #8a1f14;
+  --warn-bg: #f6e3b8;  --warn-ink: #5e4100;
+  --stop-bg: #f3d3c9;  --stop-ink: #7e1d12;
 
   /* Tag chips */
-  --chip-bg: #ebe7de;     --chip-ink: #3c4249;
-  --veg-bg: #dcefe2;      --veg-ink: #215a37;
-  --notmine-bg: #e8e2f3;  --notmine-ink: #4e3a78;
-  --occ-bg: #fbe9cf;      --occ-ink: #7a4b00;
-  --use-bg: #fde0d6;      --use-ink: #8a2f12;
-  --home-bg: #e0ecf6;     --home-ink: #20496e;
+  --chip-bg: #e6d8b6;     --chip-ink: #4a3a28;
+  --veg-bg: #d8e4c4;      --veg-ink: #2d4f24;
+  --notmine-bg: #e3d6e6;  --notmine-ink: #523a63;
+  --occ-bg: #f2dcae;      --occ-ink: #6e4600;
+  --use-bg: #f2cfc0;      --use-ink: #7e2a12;
+  --home-bg: #d7e0e6;     --home-ink: #24465f;
 
   /* Jar gauge */
-  --jar-glass: #e9e5dc;
-  --jar-ok: #6aa57f;
-  --jar-mid: #d9a441;
-  --jar-low: #d0684f;
+  --jar-glass: #e2d4b2;
+  --jar-ok: #5d8a4f;
+  --jar-mid: #c4932f;
+  --jar-low: #b8573b;
 
   --radius: 14px;
   --tap: 52px;            /* minimum height for anything you tap */
   --nav-w: 190px;         /* sidebar width in landscape */
 }
 
+/* Candlelit tavern */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #16191c;
-    --surface: #1f2327;
-    --surface-2: #2a2f34;
-    --text: #eceae4;
-    --muted: #a3aab2;
-    --line: #353b41;
+    --bg: #18110c;
+    --surface: #251a13;
+    --surface-2: #33251b;
+    --text: #f1e4c8;
+    --muted: #bca98a;
+    --line: #4d3a29;
 
-    --accent: #7cc49a;
-    --accent-ink: #10231a;
-    --accent-soft: #24392d;
-    --danger: #f08a7c;
+    --accent: #e2b75c;
+    --accent-ink: #22170f;
+    --accent-soft: #3e2e19;
+    --gold: #e8c26a;
+    --gold-bright: #f0cf7e;
+    --danger: #f0937c;
 
-    --kcal: #e59a52;
-    --protein: #6cc495;
-    --carbs: #7fa6e3;
-    --fat: #c592d6;
+    --kcal: #e39a5c;
+    --protein: #94c98a;
+    --carbs: #8fb3dd;
+    --fat: #cf9ad2;
 
-    --warn-bg: #3a3020;  --warn-ink: #f2d38c;
-    --stop-bg: #3d2421;  --stop-ink: #f5b3a9;
+    --warn-bg: #3d3018;  --warn-ink: #f2d38c;
+    --stop-bg: #43241d;  --stop-ink: #f5b3a9;
 
-    --chip-bg: #2c3136;     --chip-ink: #d3d7dc;
-    --veg-bg: #1f3a2a;      --veg-ink: #9fd8b4;
-    --notmine-bg: #332b45;  --notmine-ink: #c9b8ec;
-    --occ-bg: #3d311d;      --occ-ink: #f0c983;
-    --use-bg: #42271f;      --use-ink: #f4b29c;
-    --home-bg: #1f3142;     --home-ink: #a9cbec;
+    --chip-bg: #3a2b1f;     --chip-ink: #e3d3b4;
+    --veg-bg: #24361f;      --veg-ink: #b5dba5;
+    --notmine-bg: #36283d;  --notmine-ink: #d8c1e4;
+    --occ-bg: #42321a;      --occ-ink: #f0c983;
+    --use-bg: #46271c;      --use-ink: #f4b29c;
+    --home-bg: #1f2e38;     --home-ink: #a9cbec;
 
-    --jar-glass: #2d3237;
-    --jar-ok: #5f9e76;
-    --jar-mid: #c79a3e;
-    --jar-low: #c9634b;
+    --jar-glass: #3a2c20;
+    --jar-ok: #7aa86a;
+    --jar-mid: #d4a646;
+    --jar-low: #d0694c;
   }
 }
 
@@ -94,14 +128,24 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font: 18px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-body);
+  font-size: 19px;
+  line-height: 1.45;
+  /* Garamond's numbers dip below the line by default; these keep them level and lined up */
+  font-variant-numeric: lining-nums tabular-nums;
   -webkit-tap-highlight-color: transparent;
 }
 
-h1, h2, h3 { line-height: 1.2; margin: 0; }
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: .02em;
+  line-height: 1.2;
+  margin: 0;
+}
 h1 { font-size: 30px; }
-h2 { font-size: 22px; }
-h3 { font-size: 19px; }
+h2 { font-size: 21px; }
+h3 { font-size: 18px; }
 p { margin: 0; }
 
 button, input, select, textarea { font: inherit; color: inherit; }
@@ -566,3 +610,225 @@ dialog::backdrop { background: rgba(10, 12, 14, .5); }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+/* =========================================================
+   Fitness campaign (Quests screen and the Today card)
+   ========================================================= */
+
+:root {
+  --boss-bg: #5a1f1f;  --boss-ink: #f6e7c8;  --boss-soft: #e8cfa0;
+  --boss-gold: #e8b84a; --boss-dim: #7a3a3a;
+  --hp: #c0392b;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --boss-bg: #3a1414;  --boss-ink: #f6e7c8;  --boss-soft: #d9b98a;
+    --boss-gold: #e8b84a; --boss-dim: #5e2a2a;
+    --hp: #e0604f;
+  }
+}
+
+.ico {
+  width: 24px; height: 24px; flex: 0 0 auto;
+  fill: none; stroke: currentColor; stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
+  vertical-align: -4px;
+}
+
+.link-btn {
+  border: 0; background: none; padding: 6px 2px;
+  min-height: 44px;
+  color: var(--accent); text-decoration: underline; text-underline-offset: 3px;
+  cursor: pointer;
+}
+.link-btn.on-dark { color: var(--boss-soft); }
+
+.quests-grid { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); margin-bottom: 16px; }
+.quests-grid .col { display: grid; gap: 16px; align-content: start; }
+.quests-grid .card, .quests-grid .col > .card { margin: 0; }
+@media (orientation: landscape) and (min-width: 800px) {
+  .quests-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+
+/* ---------- Hero ---------- */
+
+.hero-card { display: flex; align-items: center; gap: 18px; }
+.hero-card.compact { gap: 14px; padding: 12px 16px; }
+.hero-sprite {
+  flex: 0 0 auto;
+  display: grid; place-items: end center;
+  padding: 8px 10px 4px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+.hero-stats { flex: 1; min-width: 0; display: grid; gap: 6px; }
+.hero-name { font-size: 22px; }
+.hero-card.compact .hero-name { font-size: 18px; }
+.stat-line { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
+.stat-line b { font-size: 24px; font-weight: 600; }
+.gold { color: var(--gold); }
+.xp-bar, .gold-bar {
+  height: 12px; border-radius: 999px; overflow: hidden;
+  background: var(--surface-2); border: 1px solid var(--line);
+}
+.xp-bar > div { height: 100%; background: var(--accent); transition: width .4s ease; }
+.gold-bar > div { height: 100%; background: var(--gold-bright); transition: width .4s ease; }
+
+/* The pixel hero. image-rendering keeps the pixels sharp. */
+.sprite { display: block; image-rendering: pixelated; }
+.sprite .sprite-body { animation: hero-bob 1.2s steps(1) infinite; }
+.sprite .sprite-blink { opacity: 0; animation: hero-blink 4.5s steps(1) infinite; }
+.sprite.hop { animation: hero-hop .5s steps(4) 2; }
+@keyframes hero-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1px); } }
+@keyframes hero-blink { 0%, 94% { opacity: 0; } 95%, 98% { opacity: 1; } }
+@keyframes hero-hop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+/* ---------- This week ---------- */
+
+.pips { display: inline-flex; gap: 6px; }
+.pip { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--muted); }
+.pip.on { background: var(--protein); border-color: var(--protein); }
+.plan { list-style: none; margin: 0; padding: 0; }
+.plan li { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 6px 0; border-top: 1px solid var(--line); }
+.plan li:first-child { border-top: 0; }
+.plan li.done .grow { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+.plan-day { font-size: 16px; font-weight: 600; color: var(--muted); width: 52px; flex: 0 0 auto; }
+.run-tag { font-size: 15px; color: var(--accent); white-space: nowrap; }
+.run-tag.done { color: var(--muted); text-decoration: line-through; }
+.check { color: var(--protein); }
+.check svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- Boss: the 5K ---------- */
+
+.boss-card { background: var(--boss-bg); color: var(--boss-ink); border-color: var(--boss-dim); }
+.boss-card h2 { color: var(--boss-ink); }
+.boss-hp { display: flex; align-items: center; gap: 10px; font-size: 16px; color: var(--boss-soft); }
+.hp-bar { flex: 1; height: 12px; border-radius: 999px; background: var(--boss-dim); overflow: hidden; }
+.hp-bar > div { height: 100%; background: var(--hp); transition: width .4s ease; }
+.stages { display: flex; align-items: center; gap: 4px; margin: 12px 0; }
+.stage { flex: 1; height: 10px; border-radius: 999px; background: var(--boss-dim); }
+.stage.done { background: var(--boss-gold); }
+.stage.current { background: var(--boss-dim); box-shadow: inset 0 0 0 2px var(--boss-gold); }
+.stage.boss { flex: 0 0 auto; height: auto; background: none; color: var(--boss-soft); }
+.stage.boss.done { color: var(--boss-gold); }
+.boss-step { font-size: 17px; font-weight: 600; color: var(--boss-soft); }
+.boss-text { font-size: 21px; margin: 2px 0 6px; }
+.boss-hint { font-size: 16px; color: var(--boss-soft); }
+.boss-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 12px; }
+.boss-btn {
+  background: var(--boss-gold); border-color: var(--boss-gold); color: #3b2a1a;
+  font-family: var(--font-display); font-weight: 700;
+}
+
+/* ---------- Regions ---------- */
+
+.regions { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); }
+.regions .card { margin: 0; }
+.region-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 8px; color: var(--accent); }
+.region-head .ico { width: 30px; height: 30px; margin-top: 2px; }
+.region-head h2 { color: var(--text); }
+.region-head p { line-height: 1.3; }
+
+.quest-row { display: flex; align-items: center; gap: 10px; min-height: 60px; padding: 6px 0; border-top: 1px solid var(--line); }
+.region-head + .quest-row, .card-head + .quest-row { border-top: 0; }
+.quest-row .grow { flex: 1; min-width: 0; line-height: 1.3; }
+.xp-chip {
+  flex: 0 0 auto;
+  font-size: 16px; font-weight: 600;
+  color: var(--gold);
+  white-space: nowrap;
+}
+.quest-done { min-width: 84px; font-family: var(--font-display); font-weight: 600; border-color: var(--accent); color: var(--accent); }
+.quest-row.done-today .quest-done { opacity: .75; }
+.today-tag { font-size: 15px; color: var(--protein); white-space: nowrap; }
+
+details.folded, details.quest-log { margin-top: 16px; }
+details.folded > summary, details.quest-log > summary {
+  min-height: var(--tap);
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-display); font-size: 18px;
+  cursor: pointer;
+}
+details.folded[open] > summary { margin-bottom: 12px; }
+.log-row { display: flex; align-items: center; gap: 10px; min-height: 56px; }
+.log-date { width: 96px; flex: 0 0 auto; }
+.log-row .grow { flex: 1; min-width: 0; }
+
+/* ---------- Toast with an Undo button ---------- */
+
+#toast.has-action { display: flex; align-items: center; gap: 16px; padding: 8px 8px 8px 20px; }
+#toast.show.has-action { pointer-events: auto; }
+.toast-btn {
+  min-height: 48px; padding: 0 18px;
+  border: 1px solid currentColor; border-radius: 10px;
+  background: transparent; color: inherit;
+  font-family: var(--font-display); font-weight: 700;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sprite .sprite-body, .sprite .sprite-blink, .sprite.hop { animation: none; }
+}
+
+/* ---------- Settings: hero editor ---------- */
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.hero-edit { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 18px; }
+.swatches { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.swatch { position: relative; cursor: pointer; }
+.swatch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.swatch span:first-of-type {
+  display: block; width: 44px; height: 44px; border-radius: 50%;
+  border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--line);
+}
+.swatch input:checked + span { box-shadow: 0 0 0 3px var(--accent); }
+.swatch input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 3px; }
+.quest-edit { display: grid; grid-template-columns: 130px minmax(0, 1fr) 90px; gap: 8px; align-items: center; }
+@media (max-width: 560px) { .quest-edit { grid-template-columns: minmax(0, 1fr) 80px; } .quest-edit > span { grid-column: 1 / -1; } }
+
+/* =========================================================
+   Parchment refresh for the whole app (pantry screens too).
+   Only looks change here; layouts and features stay the same.
+   ========================================================= */
+
+/* Cards get a thin inner rule, like a framed page. */
+.card, .item {
+  box-shadow: inset 0 0 0 3px var(--surface), inset 0 0 0 4px var(--line);
+}
+.boss-card { box-shadow: inset 0 0 0 3px var(--boss-bg), inset 0 0 0 4px var(--boss-dim); }
+.pet-card { box-shadow: none; }
+
+/* Page titles: display font with a short gold rule underneath. */
+.screen-head h1 {
+  padding-bottom: 6px;
+  background: linear-gradient(var(--gold-bright), var(--gold-bright)) left bottom / 64px 2px no-repeat;
+}
+
+/* Buttons, tabs and section labels in the display font. */
+.btn, .tabs a span, .slot-head, .kind-tag, .group-head h2 {
+  font-family: var(--font-display);
+  letter-spacing: .02em;
+}
+.btn { font-weight: 600; font-size: 17px; }
+.slot-head, .kind-tag { text-transform: none; letter-spacing: .04em; }
+.tabs { background: var(--surface-2); }
+.tabs a span { font-size: 12px; font-weight: 600; }
+.tabs a.active { color: var(--accent); }
+@media (orientation: landscape) and (min-width: 800px) {
+  .tabs a span { font-size: 15px; }
+  .tabs a.active { background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+}
+
+/* Numbers stay in the body font: the display font's 1 looks like a capital I. */
+.macro-num b, .water-num b, .fill-now b, .day-total b, .item-pct { font-weight: 600; }
+.macro-label { font-family: var(--font-display); font-size: 17px; }
+
+/* Inputs sit a shade lighter than the parchment. */
+input[type="text"], input[type="search"], input[type="number"], input[type="date"], select, textarea {
+  background: var(--surface);
+  border-color: var(--line);
+}
+
+.welcome h1 { font-size: 34px; }
+dialog { box-shadow: inset 0 0 0 3px var(--surface), inset 0 0 0 4px var(--line), 0 20px 60px rgba(0, 0, 0, .35); }

@@ -5,7 +5,7 @@
 // then downloads the new files the next time it's online, and uses
 // them from the next launch. Your data (in IndexedDB) is not touched.
 
-const CACHE_NAME = 'pantry-meals-v1';
+const CACHE_NAME = 'pantry-meals-v2';
 
 const APP_FILES = [
   './',
@@ -24,6 +24,12 @@ const APP_FILES = [
   './js/groceries.js',
   './js/recipes.js',
   './js/settings.js',
+  './js/campaign.js',
+  './js/quests.js',
+  './js/sprite.js',
+  './fonts/cinzel-latin.woff2',
+  './fonts/ebgaramond-latin.woff2',
+  './fonts/ebgaramond-italic-latin.woff2',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/maskable-512.png',

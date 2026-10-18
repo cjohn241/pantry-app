@@ -6,6 +6,42 @@ import { esc, dateKey, longLabel, fmt, ICONS, pctText, locationChip } from './ui
 import { getDay, saveDay, totals, totalText, MACROS, editMeal, applyIdealDay, copyDialog } from './meals.js';
 import { isUseFirst, isNotMine } from './rules.js';
 import { openItemDialog } from './pantry.js';
+import * as C from './campaign.js';
+import { heroCard, doQuest, doRun } from './quests.js';
+
+/** "Today's quest": your hero, the next quest in this week's plan, and the 5K run. */
+function questCard(state) {
+  const today = dateKey();
+  const next = C.weekPlan(state).find((slot) => !slot.done && slot.suggest);
+  const ranToday = state.log.some((e) => e.questId === 'c25k' && e.date === today);
+  const rows = [];
+  if (next) {
+    rows.push(`
+      <div class="quest-row">
+        <span class="grow">${esc(next.suggest.name)}<br><span class="muted small">${esc(next.label)}</span></span>
+        <span class="xp-chip">${next.suggest.xp} XP</span>
+        <button class="btn small quest-done" data-act="quest" data-id="${esc(next.suggest.id)}">Done</button>
+      </div>`);
+  }
+  if (!state.track.done && !ranToday) {
+    rows.push(`
+      <div class="quest-row">
+        <span class="grow">5K stage ${state.track.stage}, run ${state.track.run}<br><span class="muted small">${esc(state.track.text)}</span></span>
+        <span class="xp-chip">${C.RUN_XP} XP</span>
+        <button class="btn small quest-done" data-act="run">Done</button>
+      </div>`);
+  }
+  return `
+    ${heroCard(state, true)}
+    <section class="card today-quest">
+      <div class="card-head">
+        <h2>Today's quest</h2>
+        <span class="spacer"></span>
+        <a class="btn small" href="#quests">All quests</a>
+      </div>
+      ${rows.length ? rows.join('') : '<p class="muted">This week\'s quests are done. Rest counts too.</p>'}
+    </section>`;
+}
 
 const WATER_STEP = 8; // ounces per tap
 
@@ -83,10 +119,11 @@ function scoreRow(label, field, value) {
 
 export async function render(main) {
   const date = dateKey();
-  const [day, targets, items] = await Promise.all([
+  const [day, targets, items, questState] = await Promise.all([
     getDay(date),
     db.getSetting('targets', {}),
     db.getAll('items'),
+    C.loadState(),
   ]);
   const redraw = () => render(main);
 
@@ -108,6 +145,8 @@ export async function render(main) {
 
     <div class="today-grid">
       <div class="col">
+        ${questCard(questState)}
+
         <section class="card" aria-label="Today's totals">
           ${MACROS.map((m) => macroBar(m, eatenTotals[m.key], plannedTotals[m.key], targets[m.target])).join('')}
         </section>
@@ -196,6 +235,10 @@ export async function render(main) {
       copyDialog(date, 'from', redraw);
     } else if (act === 'item') {
       openItemDialog(btn.dataset.id, redraw);
+    } else if (act === 'quest') {
+      doQuest(btn.dataset.id, redraw);
+    } else if (act === 'run') {
+      doRun(redraw);
     }
   };
 }
