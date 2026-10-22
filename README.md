@@ -1,26 +1,13 @@
-# Pantry & Meals
+## Part 1. Using GitHub
 
-A tablet app for tracking a pantry, a grocery list and a meal plan. It works fully offline, and all data stays on the device.
-
-This repository holds **only the app's code**. Your personal data is never uploaded here. You load it on the tablet the first time you open the app.
-
----
-
-## Part 1. Put the app on GitHub Pages (one time, about 10 minutes)
-
-GitHub Pages hosts the app for free at an `https://` address. A PWA needs `https://` before Android will install it.
-
-### 1. Make a GitHub account
-Go to <https://github.com/signup> and create a free account. Your username will be part of the app's address.
-
-### 2. Create a repository
+### 1. Create a repository
 1. Sign in and click the **+** at the top right, then **New repository**.
 2. **Repository name:** `pantry-app`
 3. Choose **Public**. Free GitHub Pages needs a public repository, which is why your data file isn't stored here.
 4. Leave "Add a README file" **unticked**. This folder already has one.
 5. Click **Create repository**.
 
-### 3. Upload the app files
+### 2. Upload the app files
 1. On the new, empty repository page, click the link **uploading an existing file**.
 2. Open the `pantry-app` folder on your computer. Select **everything inside it** and drag it into the browser window:
    `index.html`, `manifest.webmanifest`, `sw.js`, `README.md`, `.gitignore`, and the folders `css`, `js` and `icons`.
@@ -30,7 +17,7 @@ Go to <https://github.com/signup> and create a free account. Your username will 
 
 > **Never upload `pantry-data.json` or any backup file.** The `.gitignore` file guards against this if you ever use Git, but the web uploader uploads whatever you drag in, so keep an eye on it.
 
-### 4. Turn on GitHub Pages
+### 3. Turn on GitHub Pages
 1. In the repository, click **Settings** (the gear tab), then **Pages** in the left menu.
 2. Under **Build and deployment**, set **Source** to **Deploy from a branch**.
 3. Under **Branch**, choose **main** and **/ (root)**, then click **Save**.
